@@ -1,0 +1,1 @@
+s pragorm taeks anadtgave of the fcat that the hmaun brian can raed aomslt any word as lnog as the first and lsat leterts of the word are in the cceorrt sopt. When run, it akss you to etner a sntrig. It'll tehn scrlabme the lttrees of ecah wrod, ecexpt for the fsirt and lsat lreetts. Licooatn of pituoacuntn is pevrersed. 
