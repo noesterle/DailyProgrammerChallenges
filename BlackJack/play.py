@@ -141,7 +141,7 @@ def play(deck,players):
                         action.lower() != "double down" and \
                         action.lower() != "split" and \
                         action.lower() != "surrender":
-                    action = str(input("What would you like to do?"))
+                    action = str(input("What would you like to do? You can 'hit' or 'stand'. "))
                 if action.lower() == 'hit':
                     hit(deck,players[player_num])
                 elif action.lower() == 'stand':
@@ -201,36 +201,49 @@ def winning(players):
                     print("The dealer beat Player " + str(person.id))
 
 if __name__ == '__main__':
-    deck = []
-    for i in range(0, 52):
-        deck.append(i)
-    print_deck(deck)
-    input("This is the deck.")
-    random.shuffle(deck)
+    play_again = 0
+    while play_again == 0:
+        deck = []
+        for i in range(0, 52):
+            deck.append(i)
+        print_deck(deck)
+        print("This is the deck.")
+        random.shuffle(deck)
+    
+        #Game info from user.
+        num_decks = 0
+        num_players = -1
+        while num_decks < 1:
+            num_decks = int(input("How many decks do you want to play with? "))
+        deck *= num_decks
+        while num_players < 0:
+            num_players = int(input("How many other players are there? ")) + 1
+    
+        DEALER = num_players
+        USER = 0
 
-    #Game info from user.
-    num_decks = int(input("How many decks do you want to play with?"))
-    deck *= num_decks
-    num_players = int(input("How many players are there?"))
+        #Setting up players and hands.
+        x = 0
+        all_players = []
+        print("CREATING PLAYERS")
+        while x < num_players + 1:
+            person = Player(x)
+            all_players.append(person)
+            x += 1
+        print("DEALING")
+        deal(deck, all_players)
+        x = players_playing(all_players)
 
-    DEALER = num_players
-    USER = 0
+        #Play Game
+        play(deck,all_players)
 
-    #Setting up players and hands.
-    x = 0
-    all_players = []
-    print("CREATING PLAYERS")
-    while x < num_players + 1:
-        person = Player(x)
-        all_players.append(person)
-        x += 1
-    print("DEALING")
-    deal(deck, all_players)
-    x = players_playing(all_players)
-
-    #Play Game
-    play(deck,all_players)
-
-    print("GAME OVER")
-    view(all_players,True)
-    winning(all_players)
+        print("GAME OVER")
+        view(all_players,True)
+        winning(all_players)
+        again =""
+        while (again.lower()!="y" and again.lower()!="n"):
+            again = input("Would you like to play again? (y/n)")
+        if again.lower() == "y":
+            play_again = 0
+        else:
+            play_again = 1
