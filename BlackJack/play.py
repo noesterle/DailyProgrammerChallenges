@@ -51,15 +51,25 @@ def show_hand(person, game_over):
             suit = "Diamonds"
         elif item % 4 == 3:
             suit = "Spades"
+        
+        face=((item%13)+2)
+        if face == 14:
+            face = "Ace"
+        elif face == 13:
+            face = "King"
+        elif face == 12:
+            face = "Queen"
+        elif face == 11:
+            face = "Jack"
 
         if person.id != USER and not game_over:
             if n == 0:
                 string += "?, "
                 n = 1
             else:
-                string+= str(((item % 13) + 2))+" of "+suit +", "
+                string+= str(face)+" of "+ suit +", "
         else:
-            string+= str(((item % 13) + 2))+" of "+suit +", "
+            string+= str(face)+" of "+ suit +", "
     return string[:-2]
 
 
@@ -156,7 +166,20 @@ def play(deck,players):
                 elif action.lower() == 'surrender':
                     surrender()
                     player_num += 1
-
+            #Dealer follows soft-hit rules
+            elif players[player_num]==DEALER:
+                print("Dealer is playing.")
+                ACE = [12,25,38,51]
+                if score < 17:
+                    hit(deck,players[player_num])
+                    print("Dealer hit with score less than 17")
+                elif score == 17:
+                    if len(set(ACE).intersection(players[player_num])) > 0:
+                        hit(deck,players[player_num])
+                        print("Dealer hit with a soft 17")
+                else:
+                    stand(players[player_num])
+                    print("Dealer stands")
             else:
                 #Automated player plays
                 #stand(players[player_num])
