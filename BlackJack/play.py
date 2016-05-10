@@ -8,8 +8,6 @@ class Player:
         self.id = num
         self.hand = []
         self.in_game = True
-        self.busted = False
-
 
     def __str__(self):
         return self.id
@@ -76,7 +74,6 @@ def show_hand(person, game_over):
 
 
 def sum_hand(person,game_over):
-    ACE = [12,25,38,51]
     if person.id == USER or game_over:
         hand_value = 0
         for card in person.hand:
@@ -87,12 +84,13 @@ def sum_hand(person,game_over):
                 hand_value += 10
             else:
                 hand_value += points
-        #print(hand_value, "Before Ace(s)")
-        for item in ACE:
-            if item in person.hand and hand_value > 21:
-                #print("YOU HAVE AN ACE")
-                hand_value -= 10
-        #print(hand_value, "After Ace(s)")
+        #for item in ACE:
+        #    if item in person.hand and hand_value > 21:
+        #        #You have an ace, and would bust if it counts as 11 points.
+        num_aces = any_aces(person)
+        while num_aces > 0 and hand_value > 21:
+            hand_value -= 10
+            num_aces -= 1
         return hand_value
     return "?"
 
@@ -100,8 +98,9 @@ def sum_hand(person,game_over):
 def hit(deck, person):
     new_card = deck.pop()
     person.hand.append(new_card)
-    #if(sum_hand(person,True))>21:
-        #person.busted = True
+    if (sum_hand(person,True) > 21):
+        print("BUST")
+        person.in_game = False
     #return hand
 
 
@@ -135,21 +134,27 @@ def view(players,game_over):
         else:
             print("Dealer    \tHand value", sum_hand(person,game_over), "\tHand:", show_hand(person,game_over))
 
+def any_aces(player):
+    ACE = [12,25,38,51]
+    return len(set(ACE).intersection(player.hand))
+
 
 def play(deck,players):
     player_num = 0
 
     #Give every player a turn.
     while player_num < len(players):
-        #If it's the user's turn
-        #Make sure user didn't bust.
-        if sum_hand(players[player_num],True) < 22:
-        #if(!(players[player_num].busted))
+        #print("Take a turn, player",player_num)
+        #Make sure the player didn't bust.
+        #if sum_hand(players[player_num],True) < 22:
+        if((players[player_num].in_game)):
+            #print("Player is in game.")
+            #User's turn.
             if players[player_num].id == USER:
-
+                #print("Player is user")
                 view(players,False)
                 action = ""
-
+            
                 #User decides what to do.
                 while action.lower() != "hit" and \
                         action.lower() != "stand" and \
@@ -172,36 +177,47 @@ def play(deck,players):
                     surrender()
                     player_num += 1
             #Dealer follows soft-hit rules
-            elif players[player_num]==DEALER:
-                print("Dealer is playing.")
-                ACE = [12,25,38,51]
+            #print("Dealer is player number",DEALER)
+            #Dealer's turn.
+            elif players[player_num].id==DEALER:
+                #print("Player is dealer")
+                score=(sum_hand(players[player_num],True))
+                #print("Dealer is playing.")
                 if score < 17:
                     hit(deck,players[player_num])
-                    print("Dealer hit with score less than 17")
+                    #print("Dealer hit with score less than 17")
                 elif score == 17:
-                    if len(set(ACE).intersection(players[player_num])) > 0:
+                    num_aces = any_aces(players[player_num])
+                    if num_aces > 0:
                         hit(deck,players[player_num])
-                        print("Dealer hit with a soft 17")
+                        #print("Dealer hit with a soft 17")
+                    else:
+                        stand(players[player_num])
                 else:
                     stand(players[player_num])
-                    print("Dealer stands")
+                    player_num += 1
+                    #print("Dealer stands")
+            #Other player's turn.
             else:
+                #print("PLayer is bot")
                 #Automated player plays
-                #stand(players[player_num])
                 if random.randint(0,22) > sum_hand(players[player_num],True):
                     hit(deck,players[player_num])
                 else:
                     stand(players[player_num])
-                player_num += 1
-
+                    player_num += 1
         #Over 21 points.
         else:
             print("Player "+str(player_num)+" BUSTED")
             stand(players[player_num])
             player_num += 1
-            print(player_num)
+            #print(player_num)
+
 
 def players_playing(players):
+    """
+    Determines if any players are currently playing.
+    """
     x = False
     for person in players:
         if person.in_game == True:
@@ -210,6 +226,9 @@ def players_playing(players):
 
 
 def winning(players):
+    """
+    Prints out the result of each player vs Dealer.
+    """
     dealer_score = sum_hand(players[DEALER],True)
     for person in players:
         if person.id != DEALER:
@@ -231,11 +250,12 @@ def winning(players):
 if __name__ == '__main__':
     play_again = 0
     while play_again == 0:
+        #Set up deck.
         deck = []
         for i in range(0, 52):
             deck.append(i)
-        print_deck(deck)
-        print("This is the deck.")
+        #print_deck(deck)
+        #print("This is the deck.")
         random.shuffle(deck)
     
         #Game info from user.
@@ -266,8 +286,10 @@ if __name__ == '__main__':
         play(deck,all_players)
 
         print("GAME OVER")
+        #View results (Score, Hand, won/lost to delaer.)
         view(all_players,True)
         winning(all_players)
+        #Play again?
         again =""
         while (again.lower()!="y" and again.lower()!="n"):
             again = input("Would you like to play again? (y/n)")
