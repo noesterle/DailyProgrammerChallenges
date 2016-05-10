@@ -8,6 +8,8 @@ class Player:
         self.id = num
         self.hand = []
         self.in_game = True
+        self.busted = False
+
 
     def __str__(self):
         return self.id
@@ -98,6 +100,8 @@ def sum_hand(person,game_over):
 def hit(deck, person):
     new_card = deck.pop()
     person.hand.append(new_card)
+    #if(sum_hand(person,True))>21:
+        #person.busted = True
     #return hand
 
 
@@ -140,6 +144,7 @@ def play(deck,players):
         #If it's the user's turn
         #Make sure user didn't bust.
         if sum_hand(players[player_num],True) < 22:
+        #if(!(players[player_num].busted))
             if players[player_num].id == USER:
 
                 view(players,False)
