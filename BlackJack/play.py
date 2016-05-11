@@ -8,6 +8,7 @@ class Player:
         self.id = num
         self.hand = []
         self.in_game = True
+        self.busted = False
 
     def __str__(self):
         return self.id
@@ -99,7 +100,8 @@ def hit(deck, person):
     new_card = deck.pop()
     person.hand.append(new_card)
     if (sum_hand(person,True) > 21):
-        print("BUST")
+        #print("BUST")
+        person.busted = True
         person.in_game = False
     #return hand
 
@@ -230,10 +232,15 @@ def winning(players):
     Prints out the result of each player vs Dealer.
     """
     dealer_score = sum_hand(players[DEALER],True)
+    #print("Is Dealer still in?",players[DEALER].busted)
+    #print(players[DEALER].hand)
     for person in players:
         if person.id != DEALER:
+            #print("Is player still in?",person.busted)
             player_score = sum_hand(person,True)
-            if  dealer_score < player_score <= 21:
+            if (players[DEALER].busted and not person.busted):
+                print("PLayer",str(person.id),"beat the dealer, who busted!")
+            elif  dealer_score < player_score <= 21:
                 if person.id == USER:
                     print("You beat the dealer with a score of "+ str(player_score)+"!")
                 else:
