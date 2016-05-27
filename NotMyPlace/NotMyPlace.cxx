@@ -12,8 +12,12 @@
 
 int main(int argc, char **argv)
 {
-	int MS = 12; //Place you finished in.
-	int MAX = 100; //Total number of places.
+	int MS; //Place you finished in.
+	std::cout << "Enter the place you finished in.\n";
+	std::cin >> MS;
+	int MAX;// = 100; //Total number of places.
+	std::cout<< "Enter how many competitors there were.\n";
+	std::cin >> MAX;
 	std::string VAL; //String of current place that isn't yours.
 	for(int i=1; i<= MAX; i++){
 		if (i != MS){
