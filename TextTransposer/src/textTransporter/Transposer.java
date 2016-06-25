@@ -9,18 +9,16 @@ import java.util.Scanner;
 
 
 public class Transposer {
-	public ArrayList<ArrayList> read(String filename) {
-		ArrayList<ArrayList> contents = new ArrayList();
-		ArrayList<String> line = new ArrayList();
+	public ArrayList<String> read(String filename) {
+		ArrayList<String> contents = new ArrayList();
+		String temp;
 		//read file.
 		try{
 			File text = new File(filename);
 			Scanner in = new Scanner(text);
 			while (in.hasNextLine()){
 				//Add line in file to line list.
-				line.add(in.nextLine());
-				//Add line array to contents array
-				contents.add(line);
+				contents.add(in.nextLine());
 			}
 			
 		}catch (IOException e){
@@ -29,19 +27,22 @@ public class Transposer {
 		return contents;
 	}
 	
-	public void print(ArrayList<ArrayList> arr){
+	public void print(ArrayList<String> arr){
 		int count = 0; //Location of character just printed.
-		int longest=0; //Length of longest array.
+		int longest=0; //Length of longest String.
 		for(int i = 0; i < arr.size();i++){
-			if(longest < arr.get(i).size()){
-				longest = arr.get(i).size();
+			if(longest < arr.get(i).length()){
+				longest = arr.get(i).length(); //Find longest string length.
 			}
 		}
 		while( count < longest){
-			for(ArrayList line:arr){
-				System.out.print(line.get(count)+" ");
+			for(String line:arr){
+				if (count < line.length()){ //Keep from printing characters that aren't there.
+					System.out.print(line.charAt(count) +" "); //Print the character at location count.
+				}
 			}
-			count++;
+			System.out.println();
+			count++; //Move on to the next character.
 		}
 	}
 }
