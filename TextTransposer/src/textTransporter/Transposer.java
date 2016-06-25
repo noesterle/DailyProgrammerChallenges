@@ -1,8 +1,6 @@
 package textTransporter;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -10,8 +8,7 @@ import java.util.Scanner;
 
 public class Transposer {
 	public ArrayList<String> read(String filename) {
-		ArrayList<String> contents = new ArrayList();
-		String temp;
+		ArrayList<String> contents = new ArrayList<String>();
 		//read file.
 		try{
 			File text = new File(filename);
